@@ -11,6 +11,7 @@ app.use(express.json());
 
 let database = null;
 
+//Initializing Database And Server
 const initializeDbAndServer = async () => {
   try {
     database = await open({
@@ -29,6 +30,7 @@ const initializeDbAndServer = async () => {
 
 initializeDbAndServer();
 
+//Converting State DbObject To Response Object
 const convertStateDbObjectToResponseObject = (dbObject) => {
   return {
     stateId: dbObject.state_id,
@@ -37,6 +39,7 @@ const convertStateDbObjectToResponseObject = (dbObject) => {
   };
 };
 
+//Converting District DbObject To Response Object
 const convertDistrictDbObjectToResponseObject = (dbObject) => {
   return {
     districtId: dbObject.district_id,
@@ -49,6 +52,7 @@ const convertDistrictDbObjectToResponseObject = (dbObject) => {
   };
 };
 
+//Getting States From Database
 app.get("/states/", async (request, response) => {
   const getStatesQuery = `
     SELECT
@@ -63,6 +67,7 @@ app.get("/states/", async (request, response) => {
   );
 });
 
+//Getting State From States Table 
 app.get("/states/:stateId/", async (request, response) => {
   const { stateId } = request.params;
   const getStateQuery = `
@@ -76,6 +81,7 @@ app.get("/states/:stateId/", async (request, response) => {
   response.send(convertStateDbObjectToResponseObject(state));
 });
 
+//Getting District From Districts Table
 app.get("/districts/:districtId/", async (request, response) => {
   const { districtId } = request.params;
   const getDistrictsQuery = `
@@ -89,6 +95,7 @@ app.get("/districts/:districtId/", async (request, response) => {
   response.send(convertDistrictDbObjectToResponseObject(district));
 });
 
+//Pushing District Details To Districts Table
 app.post("/districts/", async (request, response) => {
   const { stateId, districtName, cases, cured, active, deaths } = request.body;
   const postDistrictQuery = `
@@ -100,6 +107,7 @@ app.post("/districts/", async (request, response) => {
   response.send("District Successfully Added");
 });
 
+//Deleting District details From Districts Table
 app.delete("/districts/:districtId/", async (request, response) => {
   const { districtId } = request.params;
   const deleteDistrictQuery = `
@@ -112,6 +120,7 @@ app.delete("/districts/:districtId/", async (request, response) => {
   response.send("District Removed");
 });
 
+//Updating District Details Of Districts Table
 app.put("/districts/:districtId/", async (request, response) => {
   const { districtId } = request.params;
   const { districtName, stateId, cases, cured, active, deaths } = request.body;
@@ -133,6 +142,7 @@ app.put("/districts/:districtId/", async (request, response) => {
   response.send("District Details Updated");
 });
 
+//Getting Total Stats Of State From District Table
 app.get("/states/:stateId/stats/", async (request, response) => {
   const { stateId } = request.params;
   const getStateStatsQuery = `
@@ -154,6 +164,7 @@ app.get("/states/:stateId/stats/", async (request, response) => {
   });
 });
 
+//Getting state Name By Joining District And State Tables
 app.get("/districts/:districtId/details/", async (request, response) => {
   const { districtId } = request.params;
   const getStateNameQuery = `
